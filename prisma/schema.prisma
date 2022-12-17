@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Hospital {
+  id           Int            @id
+  name         String
+  Psychiatrist Psychiatrist[]
+  Patient      Patient[]
+}
+
+model Patient {
+  id             String       @id @default(uuid())
+  name           String
+  address        String
+  email          String       @unique
+  phoneNumber    String?
+  password       String
+  photo          String
+  hospitalId     Int
+  hospital       Hospital     @relation(references: [id], fields: [hospitalId])
+  psychiatrist   Psychiatrist @relation(references: [id], fields: [psychiatristId])
+  psychiatristId String
+}
+
+model Psychiatrist {
+  id         String    @id @default(uuid())
+  name       String
+  hospitalId Int
+  hospital   Hospital  @relation(references: [id], fields: [hospitalId])
+  Patient    Patient[]
+}
